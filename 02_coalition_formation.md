@@ -25,8 +25,8 @@ a protocol.
 This document describes a permissionless, peer to peer protocol for negotiating
 collaborative transaction construction. This takes place over two primary
 phases: bilateral negotiation followed by aggregation. Successful execution of
-the protocol results in a quorum of UTXO owners unanimously deciding to build a
-transaction together.
+the protocol results in a coalition of UTXO owners unanimously deciding to
+build a transaction together.
 
 ### Bilateral negotiation
 
@@ -62,9 +62,9 @@ to simulatenously optimize their outcome according to their individual
 preferences. When they value privacy, this is a positive sum interaction and
 aggregation optimizes the generated surplus.
 
-To aggregate, several proposals are bundled together with a *quorum proposal*
-that all parties must agree to. Unanimous acceptance of such a quorum proposal
-signals that everyone is ready to construct a transaction.
+To aggregate, several proposals are bundled together with a *coalition
+proposal* that all parties must agree to. Unanimous acceptance of such a
+coalition proposal signals that everyone is ready to construct a transaction.
 
 Because transactions are only valid if all inputs are signed, multiparty
 transaction require unanimous agreement. A precondition for denial of service
@@ -107,7 +107,7 @@ parties will be able to obtain a positive payoff.
 
 ### Transaction construction liveness assumptions
 
-For a quorum of $n \leq N$ peers, $f$ of which are adversarial, liveness for
+For a coalition of $n \leq N$ peers, $f$ of which are adversarial, liveness for
 transaction construction can be achieved (with privacy) by the honest subset of
 peers in $O(f)$ time. Any defection requires transaction construction to start
 over. Due to random network disruptions, necessarily some rate of (apparent)
@@ -174,10 +174,10 @@ proposal with UTXOs $\{ A, C, D \}$, and adjusts $C$ down by 50 sats, $A$ up by
 20, and $D$ up by 30. This too is unanimously accepted and broadcast.
 
 Dave then notices both proposals are compatible, and chooses to aggregate them
-together. He produces a quorum proposal, which depends on these two proposals.
-The quorum proposal chooses a specific feerate among other things, combining the
-constraints of both previous proposals. It names $\{ A, B, C, D \}$ as the
-UTXOs.
+together. He produces a coalition proposal, which depends on these two
+proposals. The coalition proposal chooses a specific feerate among other
+things, combining the constraints of both previous proposals. It names $\{ A,
+B, C, D \}$ as the UTXOs.
 
 Once all parties accept Dave's proposal, consensus has been bootstrapped.
 Everyone can derive the same total adjustments: $A - 80$, $B + 50$, $C + 0$,
@@ -323,7 +323,7 @@ that the signatures on them are verifiable. Proposals that refer to expired
 ownership proofs are still considered valid, and more generally proposals that
 commit to different ownership proofs are potentially valid as long there is a
 non-expired ownership proof associated with the UTXO, which is also used for
-input weight estimations. See the quorum proposal section below for details.
+input weight estimations. See the coalition proposal section below for details.
 
 Co-spend proposals are not updatable or revocable once fully accepted, but do
 have an expiry (specified in block height, MTU, or UTC time). More than one
@@ -334,7 +334,7 @@ accepted proposals.
 
 Co-spend proposals are however able to explicitly include conflict hints for
 other proposals, indicating that (at least) the proposer of the conflicting
-proposal would not accept a quorum proposal that depends on the excluded
+proposal would not accept a coalition proposal that depends on the excluded
 proposals.
 
 #### Effective value adjustments
@@ -373,50 +373,50 @@ adjustments.
 
 ### Proposal aggregation and condition details
 
-A quorum proposal is a special kind of co-spend proposal that aggregates
+A coalition proposal is a special kind of co-spend proposal that aggregates
 together a bundle of non-conflicting, fully accepted co-spend proposals. The
-quorum proposal is made by one of the peers, the aggregator, to *all* other
+coalition proposal is made by one of the peers, the aggregator, to *all* other
 peers implicated in the aggregation. The aggregator must also set specific
 values for any constrained parameters (e.g. a concrete feerate not just a
 range).
 
-#### Making and ratifying quorum proposals
+#### Making and ratifying coalition proposals
 
-Any peer may attempt to construct a quorum proposal by aggregating unanimously
+Any peer may attempt to construct a coalition proposal by aggregating unanimously
 accepted co-spend proposals together, so long as it controls at least one of the
 online keys implicated in the aggregation. For rate limiting, the aggregator's
 key is made explicit and the hash of this signature is used for flood control
-when gossipping partially signed quorum proposal, much like the hash of
+when gossipping partially signed coalition proposal, much like the hash of
 ownership proofs.
 
-Unlike co-spend proposals, quorum proposals are accepted with a regular
+Unlike co-spend proposals, coalition proposals are accepted with a regular
 signature by the online key. This makes it tractable for aggregators to make
-quorum proposals that revise the payoff or omit peers who did not accept. As
-discussed above, quorum proposals are not mutually exclusive. If a peer rejects
-a quorum proposal due to the inclusion of a specific proposal it may broadcast
-a counter final proposal of its own, so there is no mechanism for explicit
-rejection.
+coalition proposals that revise the payoff or omit peers who did not accept. As
+discussed above, coalition proposals are not mutually exclusive. If a peer
+rejects a coalition proposal due to the inclusion of a specific proposal it may
+broadcast a counter coalition proposal proposal of its own, so there is no
+mechanism for explicit rejection.
 
 #### Bootstrapping consensus for transaction construction
 
-Once a quorum proposal is fully accepted, a coalition has been formed complete
-with a payoff imputation. The online keys are used to initiate a consensus
-protocol in order to construct the full transaction.
+Once a coalition proposal is fully accepted, a coalition has been formed
+complete with a payoff imputation. The online keys are used to initiate a
+consensus protocol in order to construct the full transaction.
 
-Since the quorum proposal addresses every UTXO, its ownership proof set
+Since the coalition proposal addresses every UTXO, its ownership proof set
 commitment is authoritative. This determines the canonical online key set for
-the quorum, allowing a consensus protocol to be initialized. The aggregator
+the coalition, allowing a consensus protocol to be initialized. The aggregator
 should use precedence ordering for symmetry breaking in order to minimize
-additional gossip and improve the chances of the quorum proposal being
-unanimously accepted, but there is no consensus state for these data at the time
-the quorum proposal is being authored. The purpose of quorum proposals is to
-bootstrap both the consensus protocol and incentive compatibility to make use of
-it.
+additional gossip and improve the chances of the coalition proposal being
+unanimously accepted, but there is no consensus state for these data at the
+time the coalition proposal is being authored. The purpose of coalition
+proposals is to bootstrap both the consensus protocol and incentive
+compatibility to make use of it.
 
-#### Quorum proposal structure
+#### Coalition proposal structure
 
-The surplus of all included co-spend proposals is added to the quorum
-proposal's adjustment vector, which covers all UTXOs. The quorum proposal's
+The surplus of all included co-spend proposals is added to the coalition
+proposal's adjustment vector, which covers all UTXOs. The coalition proposal's
 surplus must be positive and needs to cover the shared transaction fields at the
 set feerate, but otherwise the aggregated surplus is at the discretion of the
 aggregator, it may be claimed as a coordination fee, redistributed among all
@@ -555,7 +555,7 @@ prove all transcript messages it accepted are valid, but may still arbitrarily
 censor certain operations, causing a UTXO to be unfairly blamed for failing to
 sign.
 
-Technically the quorum proposal can implement a coordination fee mechanism, for
+Technically the coalition proposal can implement a coordination fee mechanism, for
 example by making all adjustments be slightly negative apart from that of the
 coordinator (which may or may not be the aggregator). This provides the
 coordinator with an incentive to coordinate honestly on average. Unfortunately
@@ -567,9 +567,9 @@ blame round, as the other participants have no indication that censorship has
 occurred.
 
 For a more robust mechanism, coalition formation outputs a set of online keys
-for a quorum, and among other things these are intended to be used to implement
+for a coalition, and among other things these are intended to be used to implement
 byzantine fault tolerant state machine replication for transaction
-construction. The initial state, based on the quorum proposal, can be proven
+construction. The initial state, based on the coalition proposal, can be proven
 valid with respect to each UTXO's adjustment sum commitments, which enforces
 that the agreed to imputation is in effect.
 
