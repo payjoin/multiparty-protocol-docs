@@ -265,13 +265,13 @@ the basis of the committed block hash, but on its own this would not establish a
 precedence order and in the absence of consensus on the set of ownership proofs
 may result in ambiguities about which online key to use.
 
-### Negotiation: listen announcements and/or gossip of partially accepted proposals
+### Negotiation: listen advertisements and/or gossip of partially accepted proposals
 
-Short lived listen announcements may be signed by "makers" using their online
+Short lived listen advertisements may be signed by "makers" using their online
 keys to indicate that the owner of a UTXO is soliciting proposals pertaining to
 its spending over the named communication channel. Peers should only gossip
-listen announcements for currently active or soon to be active online keys. The
-hash of the signature is used as a flood protection mechanism similarly to
+listen advertisements for currently active or soon to be active online keys.
+The hash of the signature is used as a flood protection mechanism similarly to
 ownership proofs.
 
 "Takers" evaluate listening coins, and can construct proposals (defined in the
