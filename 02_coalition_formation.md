@@ -282,6 +282,15 @@ made possible using an opt-in gossip layer. On this layer it is permitted to
 broadcast partially accepted proposals. See below for a discussion of flood
 protection considerations in this setting.
 
+Listen advertisements can specify constraints for proposals being entertained,
+indicating that proposals outside of the constrained subspace (see coalition
+proposal details below for specifics) are unacceptable at any price.
+
+Finally, listen advertisements also indicate the owner's willingness to serve
+as a validator node in transaction construction, as either demanding to be a
+one, opting in at the aggregator's discretion, or declining. The aggregator has
+an incentive be a validator (and to do so honestly), but is not required to.
+
 ### Co-Spend Proposals
 
 Co-spend proposals specify a set of outpoints of coins intended to be spent
@@ -396,6 +405,15 @@ discussed above, coalition proposals are not mutually exclusive. If a peer
 rejects a coalition proposal due to the inclusion of a specific proposal it may
 broadcast a counter coalition proposal proposal of its own, so there is no
 mechanism for explicit rejection.
+
+A coalition proposal also specifies a concrete transaction construction
+protocol version, and commits to a specific set of listen advertisements
+associated with the specified UTXOs, which have either demanded or opted into
+serving as validators. These peers agree to allow other peers to connect to
+them and facilitate in gossip. Depending on the liveness requirements of
+byzantine agreement for the subsequent transaction construction protocol, the
+aggregator may specify validators at their discretion and named parties may
+accept or decline.
 
 #### Bootstrapping consensus for transaction construction
 
