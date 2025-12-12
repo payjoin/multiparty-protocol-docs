@@ -94,7 +94,7 @@ Each proof's endorsement of the online key has a validity interval specified in 
 
 Online keys may need to be rotated. Since ownership proofs are tied to UTXOs that provides some degree of Sybil protection (identities aren't costless because UTXOs aren't costless), but that is insufficient for flood protection with regards to gossipped messages, since unlike Bitcoin transaction gossip, such messages don't consume any of the scarce resource.
 
-Note that Sybil resistance for flood protection is considered separate to Sybil resistance in the context of CoinJoin $n-1$ deanonymization attacks on CoinJoins. That assumed to be encoded of the cost function, and therefore out of scope for this protocol.
+Note that Sybil resistance for flood protection is considered separate to Sybil resistance in the context of CoinJoin $n-1$ deanonymization attacks on CoinJoins. That is assumed to be encoded of the cost function, and therefore out of scope for this protocol.
 
 To be accepted (and propagated through gossip) by a peer, any newly made proof associated with a coin must have a hash value (e.g. wtxid of the BIP 322 `to_sign` virtual transaction) numerically smaller than all the other proofs already associated with that output which are known to the peer.
 
