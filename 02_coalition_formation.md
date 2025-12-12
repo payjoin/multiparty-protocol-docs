@@ -96,7 +96,7 @@ Online keys may need to be rotated. Since ownership proofs are tied to UTXOs tha
 
 Note that Sybil resistance for flood protection is considered separate to Sybil resistance in the context of CoinJoin $n-1$ deanonymization attacks on CoinJoins. That assumed to be encoded of the cost function, and therefore out of scope for this protocol.
 
-To be accepted (and propagated through gossip) by a peer, any newly made proof associated with a coin must have a hash value (e.g. wtxid of the BIP 322 `to_sign` virtual transaction) numerically smaller all the other proofs already associated with that output which are known to the peer.
+To be accepted (and propagated through gossip) by a peer, any newly made proof associated with a coin must have a hash value (e.g. wtxid of the BIP 322 `to_sign` virtual transaction) numerically smaller than all the other proofs already associated with that output which are known to the peer.
 
 Because ownership proofs may be valid at disjoint time intervals, a peer should store up to $k$ proofs (in total, not per validity time interval) in its gossip set for each candidate UTXO, so long as the hashes of *all* of these are numerically smaller than $c_1 + 2^{(c_2 d k)}$, where $d$ is the total duration of all proofs, and $c_i$ are dynamically set policy values (similar to `minrelayfee`, based on local resource limits).
 
