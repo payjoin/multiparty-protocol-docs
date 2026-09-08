@@ -1,2 +1,1 @@
-This repository hosts living documents for a family of protocols related to
-multiparty transactions.
+**Archived.** This repository is no longer maintained. Its authors continue this work at https://github.com/fungi-protocol/docs.
